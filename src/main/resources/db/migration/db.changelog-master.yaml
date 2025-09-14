@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/migration/createTable/001-create-user.yaml
+  - include:
+      file: db/migration/createTable/002-create-card.yaml
+  - include:
+      file: db/migration/createTable/003-create-cardBlockRequest.yaml
+  - include:
+      file: db/migration/fillingData/001-insert-users.yml

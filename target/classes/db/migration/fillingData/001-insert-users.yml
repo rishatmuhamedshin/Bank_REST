@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users
+      author: rishat
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: "ADMIN ADMINOV"
+              - column:
+                  name: email
+                  value: "adminAdminov@course.ru"
+              - column:
+                  name: role
+                  value: "ROLE_ADMIN"
+              - column:
+                  name: password
+                  value: "$2a$12$od4b6jB2gvQI2jQFqhg4bexQ3.rAY3nk766APPjY2tpWFuJ/p51Ma" #adminAdminov123$
+

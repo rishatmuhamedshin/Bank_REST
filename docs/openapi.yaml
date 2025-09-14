@@ -1,1 +1,1228 @@
-# Здесь будет OpenAPI описание всех доступных эндпоинтов и моделей данных.
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Bank Card API",
+    "description": "API для управления банковскими картами",
+    "contact": {
+      "name": "Rishat",
+      "email": "risatmuhamedsin@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://springdoc.org"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/users/{userId}/update": {
+      "put": {
+        "tags": [
+          "Управление пользователями"
+        ],
+        "summary": "Обновить данные пользователя",
+        "description": "Доступно только для ADMIN. Позволяет обновить username, email или пароль пользователя.",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 2
+          },
+          {
+            "name": "updatedUserRequest",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UpdatedUserRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пользователь успешно обновлён",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректные данные"
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          },
+          "404": {
+            "description": "Пользователь не найден"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/users/{userId}/newAdmin": {
+      "put": {
+        "tags": [
+          "Управление пользователями"
+        ],
+        "summary": "Назначить пользователю роль ADMIN",
+        "description": "Доступно только для ADMIN. Позволяет назначить пользователю роль администратора.",
+        "operationId": "setAdminRoleToUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Роль ADMIN успешно назначена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          },
+          "404": {
+            "description": "Пользователь не найден"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/users": {
+      "post": {
+        "tags": [
+          "Управление пользователями"
+        ],
+        "summary": "Получить список пользователей",
+        "description": "Возвращает страницу пользователей с возможностью сортировки по username.Доступно только для ADMIN",
+        "operationId": "getAllUsers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Номер страницы (начиная с 0)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "example": 0
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Размер страницы",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "example": 10
+          },
+          {
+            "name": "sortDir",
+            "in": "query",
+            "description": "Направление сортировки: asc или desc",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            },
+            "example": "asc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список пользователей получен",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageUserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/transfers/to-my-card": {
+      "post": {
+        "tags": [
+          "Управление переводом"
+        ],
+        "summary": "Перевод между своими картами",
+        "description": "Доступно для USER. Переводит средства между картами текущего пользователя.",
+        "operationId": "transferBetweenMyCards",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Перевод выполнен успешно",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректные данные"
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          },
+          "404": {
+            "description": "Карта не найдена или недостаточно средств"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/card": {
+      "get": {
+        "tags": [
+          "Управление картами"
+        ],
+        "summary": "Получить список карт (только для ADMIN)",
+        "operationId": "getAllCards",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Номер страницы (начиная с 0)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "example": 1
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Размер страницы",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "example": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список карт получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          },
+          "401": {
+            "description": "Неавторизован"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Управление картами"
+        ],
+        "summary": "Создать новую карту (только для ADMIN)",
+        "operationId": "createCard",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCardRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Карта успешно создана",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Карта с таким номером существует"
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/card/my": {
+      "post": {
+        "tags": [
+          "Управление картами"
+        ],
+        "summary": "Получить карты текущего пользователя (только для USER)",
+        "operationId": "getMyCards",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CardSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Список карт пользователя",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/signup": {
+      "post": {
+        "tags": [
+          "Аутентификация"
+        ],
+        "summary": "Регистрация пользователя",
+        "operationId": "signUp",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Успешная регистрация",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JwtAuthenticationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Пользователь уже существует"
+          }
+        }
+      }
+    },
+    "/api/auth/signin": {
+      "post": {
+        "tags": [
+          "Аутентификация"
+        ],
+        "summary": "Авторизация пользователя",
+        "operationId": "singIn",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Успешная аутентификация",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JwtAuthenticationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неверные учетные данные"
+          }
+        }
+      }
+    },
+    "/api/users/{userId}/delete": {
+      "patch": {
+        "tags": [
+          "Управление пользователями"
+        ],
+        "summary": "Удаление пользователя",
+        "description": "Доступно только для ADMIN. Блокирует пользователя по ID.",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пользователь успешно заблокирован"
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          },
+          "404": {
+            "description": "Пользователь не найден"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/card/{cardId}/block": {
+      "patch": {
+        "tags": [
+          "Управление картами"
+        ],
+        "summary": "Заблокировать карту ",
+        "description": "Доступно для USER (создание запроса) и ADMIN (мгновенная блокировка)",
+        "operationId": "blockCard",
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "path",
+            "description": "ID карты",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 123
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlockRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Запрос на блокировку создан или карта заблокирована"
+          },
+          "400": {
+            "description": "Пользователя с таким именем не существует"
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          },
+          "404": {
+            "description": "Карта не найдена"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/card/{cardId}/activate": {
+      "patch": {
+        "tags": [
+          "Управление картами"
+        ],
+        "summary": "Активировать карту (только для ADMIN)",
+        "description": "Доступно только для ADMIN. Переводит карту в статус ACTIVE.",
+        "operationId": "activateCard",
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Карта успешно активирована",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          },
+          "404": {
+            "description": "Карта не найдена"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/card/{cardId}/balance": {
+      "get": {
+        "tags": [
+          "Управление картами"
+        ],
+        "summary": "Получить баланс карты (только для USER)",
+        "description": "Доступно для USER. Возвращает баланс и данные карты.",
+        "operationId": "getBalance",
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Информация о балансе карты",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceInfoDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          },
+          "404": {
+            "description": "Карта не найдена"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/card/{cardId}": {
+      "delete": {
+        "tags": [
+          "Управление картами"
+        ],
+        "summary": "Удалить карту (только для ADMIN)",
+        "description": "Доступно только для ADMIN",
+        "operationId": "deleteCard",
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Карта успешно удалена"
+          },
+          "401": {
+            "description": "Неавторизован"
+          },
+          "403": {
+            "description": "Доступ запрещён"
+          },
+          "404": {
+            "description": "Карта не найдена"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdatedUserRequest": {
+        "type": "object",
+        "description": "Запрос на обновление данных пользователя",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя",
+            "example": "ivan_ivanov",
+            "maxLength": 50,
+            "minLength": 3
+          },
+          "email": {
+            "type": "string",
+            "description": "Email пользователя",
+            "example": "ivan@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Пароль пользователя",
+            "example": "StrongPass123!",
+            "maxLength": 255,
+            "minLength": 8
+          }
+        },
+        "required": [
+          "email",
+          "username"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "description": "Информация о пользователе",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя",
+            "example": "ivan_ivanov"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email пользователя",
+            "example": "ivan@example.com"
+          },
+          "role": {
+            "type": "string",
+            "description": "Роль пользователя",
+            "enum": [
+              "ROLE_ADMIN",
+              "ROLE_USER"
+            ],
+            "example": "USER"
+          }
+        },
+        "required": [
+          "email",
+          "role",
+          "username"
+        ]
+      },
+      "PageUserDto": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserDto"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "unpaged": {
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paged": {
+            "type": "boolean"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "unsorted": {
+            "type": "boolean"
+          },
+          "sorted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TransferRequest": {
+        "type": "object",
+        "properties": {
+          "recipientCardId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "ID карты-отправителя",
+            "example": 123
+          },
+          "senderCardId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "ID карты-получателя",
+            "example": 456
+          },
+          "transferAmount": {
+            "type": "number",
+            "description": "Сумма перевода",
+            "example": 100.5,
+            "minimum": 0.01
+          }
+        },
+        "required": [
+          "recipientCardId",
+          "senderCardId",
+          "transferAmount"
+        ]
+      },
+      "TransferResponse": {
+        "type": "object",
+        "description": "Ответ после перевода",
+        "properties": {
+          "balance": {
+            "type": "number",
+            "description": "Баланс карты после перевода",
+            "example": 900.5
+          },
+          "cardNumber": {
+            "type": "string",
+            "description": "Маскированный номер карты",
+            "example": "************1111"
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Срок действия карты",
+            "example": "2026-12-31"
+          },
+          "cardHolderName": {
+            "type": "string",
+            "description": "Имя держателя карты",
+            "example": "IVAN IVANOV"
+          }
+        },
+        "required": [
+          "balance",
+          "cardHolderName",
+          "cardNumber",
+          "expiryDate"
+        ]
+      },
+      "CreateCardRequest": {
+        "type": "object",
+        "description": "Запрос на создание новой карты",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя, которому принадлежит карта",
+            "example": "John432",
+            "maxLength": 50,
+            "minLength": 5
+          },
+          "cardStatus": {
+            "type": "string",
+            "description": "Статус карты",
+            "enum": [
+              "ACTIVE",
+              "BLOCKED",
+              "EXPIRED"
+            ],
+            "example": "ACTIVE"
+          },
+          "balance": {
+            "type": "number",
+            "description": "Баланс карты",
+            "example": 1000.5,
+            "minimum": 0
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Срок действия карты",
+            "example": "2026-12-31"
+          },
+          "cardNumber": {
+            "type": "string",
+            "description": "Номер карты",
+            "example": 4111111111111111
+          }
+        },
+        "required": [
+          "balance",
+          "cardNumber",
+          "cardStatus",
+          "expiryDate",
+          "username"
+        ]
+      },
+      "CardDto": {
+        "type": "object",
+        "description": "Данные банковской карты",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "ID карты",
+            "example": 123
+          },
+          "cardNumber": {
+            "type": "string",
+            "description": "Номер карты",
+            "example": 4111111111111111
+          },
+          "status": {
+            "type": "string",
+            "description": "Статус карты",
+            "enum": [
+              "ACTIVE",
+              "BLOCKED",
+              "EXPIRED"
+            ],
+            "example": "ACTIVE"
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Срок действия",
+            "example": "2026-12-31"
+          },
+          "cardHolderName": {
+            "type": "string",
+            "description": "Имя держателя карты",
+            "example": "IVAN IVANOV"
+          }
+        },
+        "required": [
+          "cardHolderName",
+          "cardNumber",
+          "expiryDate",
+          "id",
+          "status"
+        ]
+      },
+      "CardSearchRequest": {
+        "type": "object",
+        "description": "Параметры поиска карт",
+        "properties": {
+          "searchQuery": {
+            "type": "string",
+            "description": "Строка поиска (например, по номеру карты)",
+            "example": 4111111111111111
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "default": "0",
+            "description": "Номер страницы (начиная с 0)",
+            "example": 0,
+            "minimum": 0
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32",
+            "default": "10",
+            "description": "Размер страницы",
+            "example": 10,
+            "minimum": 1
+          },
+          "sortBy": {
+            "type": "string",
+            "default": "id",
+            "description": "Поле сортировки",
+            "example": "id"
+          },
+          "sortDirection": {
+            "type": "string",
+            "default": "asc",
+            "description": "Направление сортировки",
+            "example": "asc",
+            "pattern": "asc|desc"
+          }
+        },
+        "required": [
+          "sortBy"
+        ]
+      },
+      "Metadata": {
+        "type": "object",
+        "description": "Информация о странице",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Номер страницы",
+            "example": 1
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Размер страницы",
+            "example": 10
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Общее количество элементов",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Общее количество страниц",
+            "example": 10
+          }
+        }
+      },
+      "PageResponse": {
+        "type": "object",
+        "description": "Страничный ответ",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata",
+            "description": "Метаданные"
+          }
+        }
+      },
+      "SignUpRequest": {
+        "type": "object",
+        "description": "Запрос на регистрацию",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя",
+            "example": "Rishat432",
+            "maxLength": 50,
+            "minLength": 5
+          },
+          "email": {
+            "type": "string",
+            "description": "Адрес электронной почты",
+            "example": "Rishat@example.com",
+            "maxLength": 255,
+            "minLength": 5
+          },
+          "password": {
+            "type": "string",
+            "description": "Пароль",
+            "example": "mySuperPuperParol12314%$",
+            "maxLength": 255,
+            "minLength": 8
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "username"
+        ]
+      },
+      "JwtAuthenticationResponse": {
+        "type": "object",
+        "description": "Ответ c токеном доступа",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Токен доступа",
+            "example": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYyMjUwNj..."
+          }
+        }
+      },
+      "SignInRequest": {
+        "type": "object",
+        "description": "Запрос на аутентификацию",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя",
+            "example": "ADMIN ADMINOV",
+            "maxLength": 50,
+            "minLength": 5
+          },
+          "password": {
+            "type": "string",
+            "description": "Пароль",
+            "example": "adminAdminov123$",
+            "maxLength": 255,
+            "minLength": 8
+          }
+        },
+        "required": [
+          "password",
+          "username"
+        ]
+      },
+      "BlockRequestDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Причина блокировки",
+            "example": "Карта утеряна. Требуется блокировка.",
+            "maxLength": 500,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "BalanceInfoDto": {
+        "type": "object",
+        "description": "Информация о балансе карты",
+        "properties": {
+          "balance": {
+            "type": "number",
+            "description": "Баланс карты",
+            "example": 1234.56,
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "Статус карты",
+            "enum": [
+              "ACTIVE",
+              "BLOCKED",
+              "EXPIRED"
+            ],
+            "example": "ACTIVE"
+          },
+          "maskedCardNumber": {
+            "type": "string",
+            "description": "Маскированный номер карты",
+            "example": "************1111",
+            "maxLength": 19,
+            "minLength": 12
+          },
+          "cardHolderName": {
+            "type": "string",
+            "description": "Имя держателя карты",
+            "example": "IVAN IVANOV",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Срок действия карты",
+            "example": "2026-12-31"
+          }
+        },
+        "required": [
+          "balance",
+          "cardHolderName",
+          "expiryDate",
+          "maskedCardNumber",
+          "status"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
