@@ -2,6 +2,12 @@ databaseChangeLog:
   - changeSet:
       id: 001-create-users-table
       author: rishat
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+            tableExists:
+              tableName: users
       changes:
         - createTable:
             tableName: users

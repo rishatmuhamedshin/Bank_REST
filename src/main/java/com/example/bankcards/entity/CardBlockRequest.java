@@ -7,6 +7,10 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
+/**
+ * Сущность заявки на блокировку конкретной банковской карты.
+ * Содержит ссылку на карту и пользователя, статус и причину заявки.
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

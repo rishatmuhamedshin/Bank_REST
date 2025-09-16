@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class CreateCardRequest {
 
     @Schema(description = "Имя пользователя, которому принадлежит карта",
-            example = "John432")
+            example = "Rishat432")
     @NotBlank(message = "Имя пользователя обязательно")
     @Size(min = 5, max = 50, message = "Имя в пределах от 5 до 50 символов")
     private String username;

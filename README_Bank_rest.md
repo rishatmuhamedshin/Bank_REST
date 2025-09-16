@@ -75,7 +75,7 @@
 - **Request Body:**
 ```json
 {
-  "username": "John432",
+  "username": "Rishat432",
   "cardNumber": 4111111111111111,
   "cardStatus": "ACTIVE",
   "balance": 1000.5,

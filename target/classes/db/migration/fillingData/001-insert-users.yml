@@ -2,6 +2,12 @@ databaseChangeLog:
   - changeSet:
       id: insert-users
       author: rishat
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        and:
+          - tableExists:
+              tableName: users
       changes:
         - insert:
             tableName: users
@@ -17,5 +23,4 @@ databaseChangeLog:
                   value: "ROLE_ADMIN"
               - column:
                   name: password
-                  value: "$2a$12$od4b6jB2gvQI2jQFqhg4bexQ3.rAY3nk766APPjY2tpWFuJ/p51Ma" #adminAdminov123$
-
+                  value: "$2a$12$od4b6jB2gvQI2jQFqhg4bexQ3.rAY3nk766APPjY2tpWFuJ/p51Ma" # adminAdminov123$

@@ -911,7 +911,7 @@
           "username": {
             "type": "string",
             "description": "Имя пользователя, которому принадлежит карта",
-            "example": "John432",
+            "example": "Rishat432",
             "maxLength": 50,
             "minLength": 5
           },

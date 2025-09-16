@@ -4,16 +4,22 @@ import com.example.bankcards.entity.enumeration.CardStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Сущность банковской карты пользователя.
+ * Хранит баланс, статус, дату истечения и ссылку на владельца карты.
+ */
 @Entity
 @Table(name = "cards")
-@Data
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class BankCard {

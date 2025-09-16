@@ -7,6 +7,10 @@ import java.util.List;
 
 import java.io.Serializable;
 
+/**
+ * Сущность пользователя приложения.
+ * Содержит учётные данные, роль и список принадлежащих банковских карт.
+ */
 @Entity
 @Getter
 @Setter
